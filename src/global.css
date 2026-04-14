@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+/**
+ * 프로젝트 기본 스타일 초기화
+ */
+@layer base {
+    html,
+    #root {
+        @apply w-full h-full;
+        font-family:
+            "Pretendard",
+            -apple-system,
+            BlinkMacSystemFont,
+            system-ui,
+            sans-serif;
+    }
+
+    body {
+        @apply w-full h-full min-w-90;
+        background-color: #f4f9ff;
+        color: #1a2e4a;
+        font-family:
+            "Pretendard",
+            -apple-system,
+            BlinkMacSystemFont,
+            system-ui,
+            sans-serif;
+    }
+}
+
+/* Custom scrollbar for textareas */
+textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #f0f7ff;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #b8deff;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #7ec4ff;
+}
