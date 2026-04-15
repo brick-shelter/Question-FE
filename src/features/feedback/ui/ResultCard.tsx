@@ -37,7 +37,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ index, question, answer,
 
             <div className="p-6 space-y-6">
                 <div>
-                    <h4 className="text-sm font-bold text-blue-300 mb-2 flex items-center gap-2">
+                    <h4 className="text-sm font-bold text-blue-500 mb-2 flex items-center gap-2">
                         <svg
                             className="w-4 h-4"
                             fill="none"
@@ -61,7 +61,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ index, question, answer,
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
-                        <h4 className="text-sm font-bold text-blue-300 mb-2 flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-blue-500 mb-2 flex items-center gap-2">
                             <svg
                                 className="w-4 h-4"
                                 fill="none"
@@ -98,7 +98,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ index, question, answer,
                             </svg>
                             개선할 점
                         </h4>
-                        <p className="text-sm text-blue-400 leading-relaxed">{feedback.improvements}</p>
+                        <p className="text-sm text-orange-400 leading-relaxed">{feedback.improvements}</p>
                     </div>
                 </div>
 

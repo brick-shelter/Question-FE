@@ -37,7 +37,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ index, question, ans
                     value={answer}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder="이곳에 답변을 작성해주세요. 구체적인 경험과 사례를 들어 설명하면 더 좋은 평가를 받을 수 있습니다."
-                    className="w-full h-32 p-4 bg-blue-50 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent resize-none text-blue-400 placeholder-blue-300/50 transition-all"
+                    className="w-full h-32 p-4 bg-blue-50 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent resize-none text-blue-900 placeholder-blue-300/50 transition-all"
                 />
                 <div className="absolute bottom-3 right-4 text-xs text-blue-300/70">{answer.length} 자</div>
             </div>

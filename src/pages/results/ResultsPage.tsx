@@ -74,7 +74,7 @@ export const ResultsPage: React.FC = () => {
                 <div className="mt-12 text-center">
                     <button
                         onClick={() => navigate("/")}
-                        className="px-8 py-4 bg-white border-2 border-blue-300 hover:bg-blue-50 text-blue-600 rounded-xl font-bold shadow-sm transition-colors"
+                        className="px-8 py-4 bg-white border-2 border-blue-300 hover:bg-blue-50 text-blue-400 rounded-xl font-bold shadow-sm transition-colors"
                     >
                         처음으로 돌아가기
                     </button>

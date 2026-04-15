@@ -17,7 +17,7 @@ export const ScoreCircle: React.FC<ScoreCircleProps> = ({ score }) => {
                     cx="64"
                     cy="64"
                     r={RADIUS}
-                    stroke="#6BA4D9"
+                    stroke="#6fb9ff"
                     strokeWidth="12"
                     fill="none"
                     strokeDasharray={CIRCUMFERENCE}
@@ -28,7 +28,7 @@ export const ScoreCircle: React.FC<ScoreCircleProps> = ({ score }) => {
                 />
             </svg>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                <span className="text-3xl font-bold text-blue-900">{score}</span>
+                <span className="text-3xl font-bold text-blue-500">{score}</span>
                 <span className="text-sm text-blue-700/60 block">/ 100</span>
             </div>
         </div>
