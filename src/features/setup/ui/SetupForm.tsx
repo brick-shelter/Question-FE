@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { KeywordInput } from "./KeywordInput"
 import { InterviewTypeSelector } from "./InterviewTypeSelector"
+import { QuestionCount } from "./QuestionCount"
 
 export const SetupForm: React.FC = () => {
     const navigate = useNavigate()
@@ -10,6 +11,7 @@ export const SetupForm: React.FC = () => {
     const [interviewType, setInterviewType] = useState<"company" | "school" | "">("")
     const [subType, setSubType] = useState("")
     const [domain, setDomain] = useState("")
+    const [count, setCount] = useState(0)
 
     const addKeyword = (kw: string) => {
         if (!keywords.includes(kw) && keywords.length < 5) {
@@ -55,6 +57,8 @@ export const SetupForm: React.FC = () => {
 
             <div className="space-y-8">
                 <KeywordInput keywords={keywords} onAdd={addKeyword} onRemove={removeKeyword} />
+
+                <QuestionCount count={count} onChangeCount={setCount} />
 
                 <hr className="border-blue-100" />
 
