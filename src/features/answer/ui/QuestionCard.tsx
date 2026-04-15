@@ -25,11 +25,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ index, question, ans
             }}
             className="bg-white rounded-2xl shadow-sm border border-blue-100 p-6 mb-6 hover:shadow-md transition-shadow"
         >
-            <div className="flex items-start gap-4 mb-4">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-300 flex items-center justify-center font-bold text-sm">
+            <div className="flex items-center gap-4">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-400 flex items-center justify-center font-bold text-sm">
                     Q{index + 1}
                 </div>
-                <h3 className="text-lg font-medium text-blue-400 pt-1 leading-relaxed">{question}</h3>
+                <h3 className="text-lg font-medium text-blue-900 leading-relaxed">{question}</h3>
             </div>
 
             <div className="mt-4 relative">
