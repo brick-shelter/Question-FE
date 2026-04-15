@@ -23,8 +23,8 @@ export default defineConfig({
             ],
 
             manifest: {
-                name: "Re:Write",
-                short_name: "Re:Write",
+                name: "질문있어요",
+                short_name: "질문있어요",
                 start_url: "/",
                 theme_color: "#000000",
                 background_color: "#ffffff",
