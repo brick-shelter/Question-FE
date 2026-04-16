@@ -4,9 +4,11 @@ import { motion } from "framer-motion"
 import { KeywordInput } from "./KeywordInput"
 import { InterviewTypeSelector } from "./InterviewTypeSelector"
 import { QuestionCount } from "./QuestionCount"
+import { setupSchema } from "../model/setup.schema"
 
 export const SetupForm: React.FC = () => {
     const navigate = useNavigate()
+
     const [keywords, setKeywords] = useState<string[]>([])
     const [interviewType, setInterviewType] = useState<"company" | "school" | "">("")
     const [subType, setSubType] = useState("")
@@ -30,17 +32,22 @@ export const SetupForm: React.FC = () => {
     }
 
     const handleNext = () => {
-        if (keywords.length === 0 || !interviewType || !subType) {
-            alert("모든 항목을 입력해주세요.")
+        const result = setupSchema.safeParse({
+            keywords,
+            interviewType: interviewType || undefined,
+            subType,
+            domain: interviewType === "company" ? domain : "",
+            count,
+        })
+
+        if (!result.success) {
+            const firstError = result.error.issues[0]
+            alert(firstError.message)
             return
         }
+
         navigate("/questions", {
-            state: {
-                keywords,
-                interviewType,
-                subType,
-                domain: interviewType === "company" ? domain : "",
-            },
+            state: result.data,
         })
     }
 
@@ -79,6 +86,7 @@ export const SetupForm: React.FC = () => {
                 >
                     이전으로
                 </button>
+
                 <button
                     onClick={handleNext}
                     className="px-8 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-xl font-bold shadow-sm transition-colors"
