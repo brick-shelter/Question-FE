@@ -4,16 +4,24 @@ import { motion } from "framer-motion"
 import { StepIndicator } from "@/shared/ui/StepIndicator"
 import { QuestionList } from "@/features/answer/ui/QuestionList"
 import { AnswerSubmitBar } from "@/features/answer/ui/AnswerSubmitBar"
-import { MOCK_QUESTIONS, type Question } from "@/shared/model/mockData"
+import { type Question } from "@/shared/model/mockData"
+import { generateCompanyQuestions, generateUniversityQuestions } from "@/shared/api/interview.api"
+
+const COMPANY_TYPE_LABELS: Record<string, string> = {
+    STARTUP: "스타트업",
+    MID_SIZED_ENTERPRISES: "중견기업",
+    LARGE_CORPORATIONS: "대기업",
+    PUBLIC_ENTERPRISES: "공기업",
+}
 
 interface SetupData {
     keywords: string[]
-    interviewType: string
+    interviewType: "company" | "school"
     subType: string
-    domain: string
+    domain?: string
+    count: number
 }
 
-// 로딩 화면
 const QuestionsLoadingView: React.FC<{ setupData: SetupData }> = ({ setupData }) => (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <motion.div
@@ -24,12 +32,11 @@ const QuestionsLoadingView: React.FC<{ setupData: SetupData }> = ({ setupData })
         <h2 className="text-xl font-bold text-blue-900 mb-2">AI가 맞춤형 질문을 생성하고 있습니다</h2>
         <p className="text-blue-700/60 text-sm">
             {setupData.keywords.join(", ")} 분야 {setupData.domain ? `(${setupData.domain}) ` : ""}
-            {setupData.subType} 면접을 위한 질문을 준비중입니다...
+            {COMPANY_TYPE_LABELS[setupData.subType] ?? setupData.subType} 면접을 위한 질문을 준비중입니다...
         </p>
     </div>
 )
 
-// 질문 헤더 배너
 const QuestionsBanner: React.FC<{ setupData: SetupData }> = ({ setupData }) => (
     <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-blue-100 flex items-center justify-between">
         <div>
@@ -46,7 +53,7 @@ const QuestionsBanner: React.FC<{ setupData: SetupData }> = ({ setupData }) => (
                 ))}
                 <span className="text-gray-300">|</span>
                 <span className="text-xs font-medium text-blue-700">
-                    {setupData.subType}
+                    {COMPANY_TYPE_LABELS[setupData.subType] ?? setupData.subType}
                     {setupData.domain ? ` · ${setupData.domain}` : ""}
                 </span>
             </div>
@@ -60,6 +67,7 @@ export const QuestionsPage: React.FC = () => {
     const [loading, setLoading] = useState(true)
     const [questions, setQuestions] = useState<Question[]>([])
     const [answers, setAnswers] = useState<Record<string, string>>({})
+    const [error, setError] = useState<string | null>(null)
 
     const setupData = location.state as SetupData | null
 
@@ -69,17 +77,42 @@ export const QuestionsPage: React.FC = () => {
             return
         }
 
-        const timer = setTimeout(() => {
-            const matchedKey = setupData.keywords.find((kw) => MOCK_QUESTIONS[kw])
-            const categoryQuestions = MOCK_QUESTIONS[matchedKey || ""] || MOCK_QUESTIONS["default"]
+        const fetchQuestions = async () => {
+            try {
+                let questionTexts: string[]
 
-            setQuestions(categoryQuestions)
-            setAnswers(Object.fromEntries(categoryQuestions.map((q) => [q.id, ""])))
-            setLoading(false)
-        }, 2000)
+                if (setupData.interviewType === "company") {
+                    const res = await generateCompanyQuestions({
+                        keywords: setupData.keywords,
+                        questionCount: setupData.count,
+                        companyType: setupData.subType || undefined,
+                        domain: setupData.domain || undefined,
+                    })
+                    questionTexts = res.questions
+                } else {
+                    const res = await generateUniversityQuestions({
+                        keywords: setupData.keywords,
+                        questionCount: setupData.count,
+                        major: setupData.subType || undefined,
+                    })
+                    questionTexts = res.questions
+                }
 
-        return () => clearTimeout(timer)
-    }, [setupData, navigate])
+                const generatedQuestions: Question[] = questionTexts.map((text, index) => ({
+                    id: `q${index + 1}`,
+                    text,
+                }))
+                setQuestions(generatedQuestions)
+                setAnswers(Object.fromEntries(generatedQuestions.map((q) => [q.id, ""])))
+            } catch {
+                setError("질문 생성에 실패했습니다. 다시 시도해주세요.")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchQuestions()
+    }, [])
 
     const handleAnswerChange = (id: string, value: string) => {
         setAnswers((prev) => ({ ...prev, [id]: value }))
@@ -94,6 +127,17 @@ export const QuestionsPage: React.FC = () => {
     }
 
     if (loading && setupData) return <QuestionsLoadingView setupData={setupData} />
+    if (error) return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button
+                onClick={() => navigate("/setup")}
+                className="px-6 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-xl font-bold transition-colors"
+            >
+                다시 시도하기
+            </button>
+        </div>
+    )
     if (!setupData) return null
 
     const answeredCount = Object.values(answers).filter((a) => a.trim().length > 0).length
