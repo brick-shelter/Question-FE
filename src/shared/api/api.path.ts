@@ -5,4 +5,11 @@ export const API_PATH = {
         LOGOUT: "/auth/logout",
         REFRESH: "/auth/refresh",
     },
+    INTERVIEW: {
+        QUESTIONS: {
+            COMPANY: "/api/interview/questions/company",
+            UNIVERSITY: "/api/interview/questions/university",
+        },
+        FEEDBACK: "/api/interview/feedback",
+    },
 }
