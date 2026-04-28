@@ -1,7 +1,12 @@
 import React from "react"
 import { motion } from "framer-motion"
 
-const COMPANY_TYPES = ["스타트업", "중견기업", "대기업", "공기업"]
+const COMPANY_TYPES = [
+    { label: "스타트업", value: "STARTUP" },
+    { label: "중견기업", value: "MID_SIZED_ENTERPRISES" },
+    { label: "대기업", value: "LARGE_CORPORATIONS" },
+    { label: "공기업", value: "PUBLIC_ENTERPRISES" },
+]
 
 interface InterviewTypeSelectorProps {
     interviewType: "company" | "school" | ""
@@ -89,16 +94,16 @@ export const InterviewTypeSelector: React.FC<InterviewTypeSelectorProps> = ({
                             <div className="flex flex-wrap gap-2">
                                 {COMPANY_TYPES.map((type) => (
                                     <button
-                                        key={type}
-                                        onClick={() => onSubTypeChange(type)}
+                                        key={type.value}
+                                        onClick={() => onSubTypeChange(type.value)}
                                         className={`px-4 py-2 rounded-lg text-sm transition-all
                       ${
-                          subType === type
+                          subType === type.value
                               ? "bg-white border-2 border-blue-400 text-blue-600 font-bold shadow-sm"
                               : "bg-white border border-blue-200 text-blue-700 hover:border-blue-300"
                       }`}
                                     >
-                                        {type}
+                                        {type.label}
                                     </button>
                                 ))}
                             </div>
