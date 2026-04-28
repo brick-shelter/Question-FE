@@ -1,18 +1,13 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { ScoreCircle } from "./ScoreCircle"
+import type { OverallEvaluation } from "@/shared/model/api.type"
 
 interface FeedbackSummaryProps {
-    totalScore: number
+    overallEvaluation: OverallEvaluation
 }
 
-const getScoreMessage = (score: number) => {
-    if (score >= 90) return "훌륭합니다! 면접 준비가 아주 잘 되어있어요."
-    if (score >= 70) return "좋습니다! 조금만 더 다듬으면 완벽하겠어요."
-    return "괜찮습니다! 피드백을 바탕으로 계속 연습해보세요."
-}
-
-export const FeedbackSummary: React.FC<FeedbackSummaryProps> = ({ totalScore }) => {
+export const FeedbackSummary: React.FC<FeedbackSummaryProps> = ({ overallEvaluation }) => {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -25,14 +20,11 @@ export const FeedbackSummary: React.FC<FeedbackSummaryProps> = ({ totalScore }) 
             <h2 className="text-2xl font-bold text-blue-900 mb-6">종합 면접 평가 결과</h2>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-                <ScoreCircle score={totalScore} />
+                <ScoreCircle score={overallEvaluation.score} />
 
                 <div className="text-left max-w-md">
-                    <h3 className="text-lg font-bold text-blue-900 mb-2">{getScoreMessage(totalScore)}</h3>
-                    <p className="text-blue-700/60 text-sm leading-relaxed">
-                        전체적으로 본인의 경험을 잘 전달하려고 노력했습니다. 아래 각 질문별 상세 피드백과 모범 답안을
-                        확인하고, 부족한 부분을 보완하여 다음 면접을 준비해보세요.
-                    </p>
+                    <h3 className="text-lg font-bold text-blue-900 mb-2">{overallEvaluation.title}</h3>
+                    <p className="text-blue-700/60 text-sm leading-relaxed">{overallEvaluation.content}</p>
                 </div>
             </div>
         </motion.div>

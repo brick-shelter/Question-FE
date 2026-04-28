@@ -4,15 +4,16 @@ import { motion } from "framer-motion"
 import { StepIndicator } from "@/shared/ui/StepIndicator"
 import { FeedbackSummary } from "@/features/feedback/ui/FeedbackSummary"
 import { FeedbackList } from "@/features/feedback/ui/FeedbackList"
-import { type Question, type Feedback, generateMockFeedback } from "@/shared/model/mockData"
+import { type Question } from "@/shared/model/mockData"
+import { type FeedbackResponse } from "@/shared/model/api.type"
+import { generateFeedback } from "@/shared/api/interview.api"
 
 interface ResultsState {
-    setupData: any
+    setupData: unknown
     questions: Question[]
     answers: Record<string, string>
 }
 
-// 로딩 화면
 const ResultsLoadingView: React.FC = () => (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <motion.div
@@ -38,8 +39,8 @@ export const ResultsPage: React.FC = () => {
     const location = useLocation()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
-    const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
-    const [totalScore, setTotalScore] = useState(0)
+    const [feedbackData, setFeedbackData] = useState<FeedbackResponse | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
     const state = location.state as ResultsState | null
 
@@ -49,27 +50,46 @@ export const ResultsPage: React.FC = () => {
             return
         }
 
-        const timer = setTimeout(() => {
-            const generated = state.questions.map((q) => generateMockFeedback(q.id, state.answers[q.id] || ""))
-            setFeedbacks(generated)
-            setTotalScore(Math.round(generated.reduce((sum, f) => sum + f.score, 0) / generated.length))
-            setLoading(false)
-        }, 2500)
+        const fetchFeedback = async () => {
+            try {
+                const qaList = state.questions.map((q) => ({
+                    question: q.text,
+                    answer: state.answers[q.id] ?? "",
+                }))
+                const result = await generateFeedback({ qaList })
+                setFeedbackData(result)
+            } catch {
+                setError("피드백 생성에 실패했습니다. 다시 시도해주세요.")
+            } finally {
+                setLoading(false)
+            }
+        }
 
-        return () => clearTimeout(timer)
-    }, [state, navigate])
+        fetchFeedback()
+    }, [])
 
     if (loading) return <ResultsLoadingView />
-    if (!state) return null
+    if (error) return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button
+                onClick={() => navigate(-1)}
+                className="px-6 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-xl font-bold transition-colors"
+            >
+                다시 시도하기
+            </button>
+        </div>
+    )
+    if (!state || !feedbackData) return null
 
     return (
         <div className="min-h-screen py-12 px-4">
             <StepIndicator currentStep={4} />
 
             <div className="max-w-4xl mx-auto">
-                <FeedbackSummary totalScore={totalScore} />
+                <FeedbackSummary overallEvaluation={feedbackData.overallEvaluation} />
 
-                <FeedbackList questions={state.questions} answers={state.answers} feedbacks={feedbacks} />
+                <FeedbackList questionFeedbacks={feedbackData.questionFeedbacks} />
 
                 <div className="mt-12 text-center">
                     <button

@@ -1,31 +1,19 @@
 import React from "react"
 import { ResultCard } from "./ResultCard"
-import type { Question, Feedback } from "@/shared/model/mockData"
+import type { QuestionFeedback } from "@/shared/model/api.type"
 
 interface FeedbackListProps {
-    questions: Question[]
-    answers: Record<string, string>
-    feedbacks: Feedback[]
+    questionFeedbacks: QuestionFeedback[]
 }
 
-export const FeedbackList: React.FC<FeedbackListProps> = ({ questions, answers, feedbacks }) => {
+export const FeedbackList: React.FC<FeedbackListProps> = ({ questionFeedbacks }) => {
     return (
         <div>
             <h3 className="text-xl font-bold text-blue-900 px-2 mb-6">질문별 상세 피드백</h3>
             <div className="space-y-8">
-                {questions.map((q, index) => {
-                    const feedback = feedbacks.find((f) => f.questionId === q.id)
-                    if (!feedback) return null
-                    return (
-                        <ResultCard
-                            key={q.id}
-                            index={index}
-                            question={q.text}
-                            answer={answers[q.id]}
-                            feedback={feedback}
-                        />
-                    )
-                })}
+                {questionFeedbacks.map((feedback, index) => (
+                    <ResultCard key={index} index={index} feedback={feedback} />
+                ))}
             </div>
         </div>
     )
